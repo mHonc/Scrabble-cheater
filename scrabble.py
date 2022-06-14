@@ -163,7 +163,7 @@ def add_cheated_word_on_map():
 print('\n'.join([''.join(['{:4}'.format(item) for item in row])
                  for row in board]))
 
-find_cheated_words()
+#find_cheated_words()
 add_cheated_word_on_map()
 
 print('\n'.join([''.join(['{:4}'.format(item) for item in row])
