@@ -21,7 +21,7 @@ board = ([["|", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-", "-",
           ["|", " ", " ", " ", " ", " ", " ", " ", " ", "A", " ", " ", " ", " ", " ", " ", " ", " ", "|"],
           ["|", " ", " ", " ", " ", " ", " ", " ", " ", "L", " ", " ", " ", " ", " ", " ", " ", " ", "|"],
           ["|", " ", " ", " ", " ", " ", " ", " ", " ", "I", " ", " ", " ", " ", " ", " ", " ", " ", "|"],
-          ["|", " ", " ", " ", " ", " ", " ", " ", " ", "C", " ", " ", "X", " ", " ", " ", " ", " ", "|"],
+          ["|", " ", " ", " ", " ", " ", " ", " ", " ", "C", " ", " ", " ", " ", " ", " ", " ", " ", "|"],
           ["|", " ", " ", " ", " ", " ", " ", " ", " ", "E", " ", " ", " ", " ", " ", " ", " ", " ", "|"],
           ["|", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", "|"],
           ["|", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", " ", "|"],
@@ -44,9 +44,9 @@ def is_subset(s1, s2):
     alist = list(s2)
 
     pos1 = 0
-    still_ok = True
+    stillOK = True
 
-    while pos1 < len(s1) and still_ok:
+    while pos1 < len(s1) and stillOK:
         pos2 = 0
         found = False
         while pos2 < len(alist) and not found:
@@ -58,12 +58,11 @@ def is_subset(s1, s2):
         if found:
             alist[pos2] = None
         else:
-            still_ok = False
+            stillOK = False
 
         pos1 = pos1 + 1
 
-    return still_ok
-
+    return stillOK
 
 # tablica wszystkich mozliwych kombinacji slow z dostepnych liter
 def find_cheated_words():
@@ -90,81 +89,82 @@ def add_cheated_word_on_map():
     column = 0
     right = False
     down = False
-    final_right = False
-    final_down = False
+    finalRight = False
+    finalDown = False
     position_in_word = 0
-    temp_rack = RACK
-    high_score = 0
+    tempRack = RACK
+    highScore = 0
     score = 0
-    finded_word = ""
+    findedWord = ""
 
     rows = 19
     cols = 19
     for i in range(0, rows):  # rzedy
         for j in range(0, cols):  # kolumny
             if (board[i][j] != " " and board[i][j] != "|" and board[i][j] != "-"):  # jesli wykryjemy litere
-                local_rack = RACK + board[i][j]  # dodajemy ja do liter gracza
+                localRack = RACK + board[i][j]  # dodajemy ja do liter gracza
                 for word in words:  # szukamy najlepiej punktowanego slowa, ktore mozemy wstawic na plansze
                     score = 0
-                    if is_subset(word, local_rack):  # sprawdzamy, czy kombinacja znajduje sie w slowniku
+                    if is_subset(word, localRack):  # sprawdzamy, czy kombinacja znajduje sie w slowniku
                         for letter in list(word):
                             score = score + scores[letter.lower()]  # wyliczamy wynik kombinacji
-                        letter_position = word.find(board[i][j])  # lokacja litery w slowie
+                        letterPosition = word.find(board[i][j])  # lokacja litery w slowie
                         if (
-                                score > high_score and letter_position != -1):  # jesli wynik jest lepszy od najlepszego dochczasowego, sprawdzamy, czy mozna go wstawic na plansze
+                                score > highScore and letterPosition != -1):  # jesli wynik jest lepszy od najlepszego dochczasowego, sprawdzamy, czy mozna go wstawic na plansze
                             right = True
                             down = True
-                            for local_column in range(j - letter_position - 1, j + len(
-                                    word) - letter_position + 1):  # sprawdzamy, czy wyraz mozna wpasowac poziomo
-                                if (local_column == j):
+                            for localColumn in range(j - letterPosition - 1, j + len(
+                                    word) - letterPosition + 1):  # sprawdzamy, czy wyraz mozna wpasowac poziomo
+                                if (localColumn == j):
                                     continue
-                                if (board[i][local_column] != " "):
+                                if (board[i][localColumn] != " "):
                                     right = False
                                     break
                             if (right == True):  # jesli tak, aktualizujemy najlepsze znalezione slowo
                                 row = i
                                 column = j
-                                high_score = score
-                                finded_word = word
-                                final_down = True
-                                position_in_word = letter_position
+                                highScore = score
+                                findedWord = word
+                                finalRight = True
+                                position_in_word = letterPosition
 
                             else:
-                                for local_row in range(i - letter_position - 1, i + len(
-                                        word) - letter_position + 1):  # sprawdzamy, czy wyraz mozna wpasowac pionowo
-                                    if (local_row == i):
+                                for localRow in range(i - letterPosition - 1, i + len(
+                                        word) - letterPosition + 1):  # sprawdzamy, czy wyraz mozna wpasowac pionowo
+                                    if (localRow == i):
                                         continue
-                                    if (board[local_row][j] != " "):
+                                    if (board[localRow][j] != " "):
                                         down = False
                                         break
                                 if (down == True):
                                     row = i
                                     column = j
-                                    high_score = score
-                                    finded_word = word
-                                    final_down = True
-                                    position_in_word = letter_position
+                                    highScore = score
+                                    findedWord = word
+                                    finalDown = True
+                                    position_in_word = letterPosition
 
     # dodajemy w poziomie
-    if final_right:
+    if (finalRight):
         i = 0
-        for iteration in range(0, len(finded_word)):
-            board[row][column - position_in_word + iteration] = finded_word[i]
+        for iteration in range(0, len(findedWord)):
+            board[row][column - position_in_word + iteration] = findedWord[i]
             i += 1
 
     # dodajemy w pionie
-    if final_down:
+    if (finalDown):
         i = 0
-        for iteration in range(0, len(finded_word)):
-            board[row - position_in_word + iteration][column] = finded_word[i]
+        for iteration in range(0, len(findedWord)):
+            board[row - position_in_word + iteration][column] = findedWord[i]
             i += 1
 
 
 print('\n'.join([''.join(['{:4}'.format(item) for item in row])
                  for row in board]))
 
-#find_cheated_words()
+#FindCheatedWords()
 add_cheated_word_on_map()
+
 
 print('\n'.join([''.join(['{:4}'.format(item) for item in row])
                  for row in board]))
